@@ -1,0 +1,32 @@
+{
+  "name": "benchmark_webui",
+  "version": "1.0.0",
+  "description": "benchmarking web ui frameworks",
+  "main": "run-benchmarks.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valyonbalazs/benchmark_webui.git"
+  },
+  "keywords": [
+    "benchmark",
+    "web",
+    "ui",
+    "angular1.x",
+    "angular2",
+    "react"
+  ],
+  "author": "Balazs Valyon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/valyonbalazs/benchmark_webui/issues"
+  },
+  "homepage": "https://github.com/valyonbalazs/benchmark_webui#readme",
+  "dependencies": {
+    "browser-perf": "^1.4.11",
+    "chromedriver": "^2.24.1",
+    "json2csv": "^3.6.3"
+  }
+}
