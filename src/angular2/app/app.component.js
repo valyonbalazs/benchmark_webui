@@ -1,56 +1,54 @@
 (function(app) {
+    // GENERATING DATA -------------------------------------------------------
     var ENV = {};
-    ENV.rows = 100;
+    ENV.rows = 200;
     ENV.timeout = 0;
 
     var start = Date.now();
     var loadCount = 0;
 
     function getData() {
-      // generate some dummy data
+      // Simulating Database clusters with dummy data
       data = {
         start_at: new Date().getTime() / 1000,
         databases: {}
       };
 
+      // Creating dummy master DB clusters
       for (var i = 1; i <= ENV.rows; i++) {
         data.databases["cluster" + i] = {
           queries: []
         };
-
-        data.databases["cluster" + i + "slave"] = {
-          queries: []
-        };
       }
 
+      // Iterate through all of the dummy DBs and fill with data
       Object.keys(data.databases).forEach(function(dbname) {
+
+        // Get a dummy DB value 
         var info = data.databases[dbname];
 
-        var r = Math.floor((Math.random() * 10) + 1);
+        // Generate random number property for each DB instance
+        var r = Math.floor((Math.random() * 30) + 1);
         for (var i = 0; i < r; i++) {
           var q = {
-            canvas_action: null,
-            canvas_context_id: null,
-            canvas_controller: null,
-            canvas_hostname: null,
-            canvas_job_tag: null,
-            canvas_pid: null,
             elapsed: Math.random() * 15,
-            query: "SELECT blah FROM something",
+            query: "Critical load",
             waiting: Math.random() < 0.5
           };
 
           if (Math.random() < 0.2) {
-            q.query = "<IDLE> in transaction";
+            q.query = "<IDLE>";
           }
 
           if (Math.random() < 0.1) {
-            q.query = "vacuum";
+            q.query = "Normal functioning";
           }
 
+          // Fill the DB instance with random content
           info.queries.push(q);
         }
 
+        // Sort the DB instances by elapsed time
         info.queries = info.queries.sort(function(a, b) {
           return b.elapsed - a.elapsed;
         });
@@ -59,6 +57,8 @@
       return data;
     }
 
+    // ------------------------------------------------------------------
+    // UI Rendering
     var _base;
 
     (_base = String.prototype).lpad || (_base.lpad = function(padding, toLength) {
@@ -67,9 +67,8 @@
 
     app.AppComponent = ng.core
         .Component({
-          selector: 'my-app',
+          selector: 'my-app', // The root element
           templateUrl: './app/component.html'
-          //directives: [angular.NgFor]
         })
         .Class({
           constructor: function() {
@@ -77,11 +76,14 @@
               var self = this;
 
               function loadSamples() {
+
+                  // Updated new data from dummy data generator
                   var newData = getData();
 
                   Object.keys(newData.databases).forEach(function(dbname) {
                     var sampleInfo = newData.databases[dbname];
 
+                    // If the dummy database instance does not exists already
                     if (!self.databases[dbname]) {
                       self.databases[dbname] = {
                         name: dbname,
@@ -105,9 +107,10 @@
                         db.topFiveQueries.push({ query: "" });
                     }
 
+                    // Adding style class selectors to the instance number indicators
                     var countClassName = "label";
                     if (db.lastSample.queries.length >= 20) {
-                        countClassName += " label-important";
+                        countClassName += " label-danger";
                     } else if (db.lastSample.queries.length >= 10) {
                         countClassName += " label-warning";
                     } else {
@@ -120,6 +123,7 @@
                   setTimeout(loadSamples, ENV.timeout);
               }
 
+              // Load data after initialization
               loadSamples();
           },
 
@@ -132,6 +136,7 @@
               return dbs;
           },
 
+          // Adding style class selectors for elapsed time values in table cells
           getClassName: function(query) {
               var className = "elapsed short";
               if (query.elapsed >= 10.0) {
@@ -142,6 +147,7 @@
               return "Query " + className;
           },
 
+          // Formatting displayed elapsed time as data in the table cell
           formatElapsed: function(value) {
               if(!value) {
                   return '';

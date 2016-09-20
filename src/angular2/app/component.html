@@ -1,6 +1,16 @@
 <div id="dbmon">
     <div>
         <table class="table table-striped latest-data">
+            <thead>
+                <tr>
+                    <th>DB Cluster name</th>
+                    <th>Number of DB instances</th>
+                    <th>Values</th>
+                    <th>Values</th>
+                    <th>Values</th>
+                    <th>Values</th>
+                </tr>
+            </thead>
             <tbody>
                 <tr *ngFor="#database of getDatabases()">
                     <td class="dbname">
@@ -14,6 +24,7 @@
                     <td *ngFor="#query of database.topFiveQueries"
                         [ngClass]="getClassName(query)">
                         {{formatElapsed(query.elapsed)}}
+                        <!--Hover element for details-->
                         <div class="popover left">
                             <div class="popover-content">
                                 {{query.query}}

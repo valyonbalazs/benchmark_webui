@@ -1,72 +1,72 @@
+// GENERATING DATA -------------------------------------------------------
 var ENV = {};
-ENV.rows = 100;
+ENV.rows = 200;
 ENV.timeout = 0;
 
-/** @jsx React.DOM */
 var start = Date.now();
 var loadCount = 0;
 
 function getData() {
-  // generate some dummy data
-  data = {
-    start_at: new Date().getTime() / 1000,
-    databases: {}
-  };
-
-  for (var i = 1; i <= ENV.rows; i++) {
-    data.databases["cluster" + i] = {
-      queries: []
+    // Simulating Database clusters with dummy data
+    var data = {
+      start_at: new Date().getTime() / 1000,
+      databases: {}
     };
 
-    data.databases["cluster" + i + "slave"] = {
-      queries: []
-    };
-  }
-
-  Object.keys(data.databases).forEach(function(dbname) {
-    var info = data.databases[dbname];
-
-    var r = Math.floor((Math.random() * 10) + 1);
-    for (var i = 0; i < r; i++) {
-      var q = {
-        canvas_action: null,
-        canvas_context_id: null,
-        canvas_controller: null,
-        canvas_hostname: null,
-        canvas_job_tag: null,
-        canvas_pid: null,
-        elapsed: Math.random() * 15,
-        query: "SELECT blah FROM something",
-        waiting: Math.random() < 0.5
+    // Creating dummy master DB clusters
+    for (var i = 1; i <= ENV.rows; i++) {
+      data.databases["cluster" + i] = {
+        queries: []
       };
-
-      if (Math.random() < 0.2) {
-        q.query = "<IDLE> in transaction";
-      }
-
-      if (Math.random() < 0.1) {
-        q.query = "vacuum";
-      }
-
-      info.queries.push(q);
     }
 
-    info.queries = info.queries.sort(function(a, b) {
-      return b.elapsed - a.elapsed;
-    });
-  });
+    // Iterate through all of the dummy DBs and fill with data
+    Object.keys(data.databases).forEach(function(dbname) {
 
-  return data;
+      // Get a dummy DB value 
+      var info = data.databases[dbname];
+
+      // Generate random number property for each DB instance
+      var r = Math.floor((Math.random() * 30) + 1);
+      for (var i = 0; i < r; i++) {
+        var q = {
+          elapsed: Math.random() * 15,
+          query: "Critical load",
+          waiting: Math.random() < 0.5
+        };
+
+        if (Math.random() < 0.2) {
+          q.query = "<IDLE>";
+        }
+
+        if (Math.random() < 0.1) {
+          q.query = "Normal functioning";
+        }
+
+        // Fill the DB instance with random content
+        info.queries.push(q);
+      }
+
+      // Sort the DB instances by elapsed time
+      info.queries = info.queries.sort(function(a, b) {
+        return b.elapsed - a.elapsed;
+      });
+    });
+
+    return data;
 }
 
+// ------------------------------------------------------------------
+// UI Rendering
 var _base;
 
 (_base = String.prototype).lpad || (_base.lpad = function(padding, toLength) {
   return padding.repeat((toLength - this.length) / padding.length).concat(this);
 });
 
+// Formatting displayed elapsed time as data in the table cell
 function formatElapsed(value) {
-  str = parseFloat(value).toFixed(2);
+  var str = parseFloat(value).toFixed(2);
   if (value > 60) {
     minutes = Math.floor(value / 60);
     comps = (value % 60).toFixed(2).split('.');
@@ -79,6 +79,7 @@ function formatElapsed(value) {
 
 var Query = React.createClass({
   render: function() {
+    // Adding style class selectors for elapsed time values in table cells
     var className = "elapsed short";
     if (this.props.elapsed >= 10.0) {
       className = "elapsed warn_long";
@@ -88,6 +89,7 @@ var Query = React.createClass({
     }
 
     return (
+      // Hover element for details
       <td className={"Query " + className}>
         {this.props.elapsed ? formatElapsed(this.props.elapsed) : ''}
         <div className="popover left">
@@ -114,6 +116,7 @@ var sample = function (queries, time) {
     );
   });
 
+  // Adding style class selectors to the instance number indicators
   var countClassName = "label";
   if (queries.length >= 20) {
     countClassName += " label-important";
@@ -150,6 +153,7 @@ var Database = React.createClass({
   }
 });
 
+// The root element
 var DBMon = React.createClass({
   getInitialState: function() {
     return {
@@ -159,11 +163,14 @@ var DBMon = React.createClass({
 
   loadSamples: function () {
     loadCount++;
+
+    // Updated new data from dummy data generator
     var newData = getData();
 
     Object.keys(newData.databases).forEach(function(dbname) {
       var sampleInfo = newData.databases[dbname];
 
+      // If the dummy database instance does not exists already
       if (!this.state.databases[dbname]) {
         this.state.databases[dbname] = {
           name: dbname,
@@ -186,6 +193,7 @@ var DBMon = React.createClass({
   },
 
   componentDidMount: function() {
+    // Load data after initialization
     this.loadSamples();
   },
 
@@ -201,6 +209,16 @@ var DBMon = React.createClass({
     return (
       <div>
         <table className="table table-striped latest-data">
+          <thead>
+            <tr>
+              <th>DB Cluster name</th>
+              <th>Number of DB instances</th>
+              <th>Values</th>
+              <th>Values</th>
+              <th>Values</th>
+              <th>Values</th>
+            </tr>
+          </thead>
           <tbody>
             {databases}
           </tbody>
