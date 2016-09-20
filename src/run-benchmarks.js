@@ -31,7 +31,7 @@ function startServer(dir) {
 
     console.log("Starting Python HTTP server at " + fulldir);
 
-    return spawn('python2', ['-m', 'SimpleHTTPServer'], {
+    return spawn('c:\\Python27\\python.exe', ['-m', 'SimpleHTTPServer'], {
         cwd: fulldir
     });
 }
