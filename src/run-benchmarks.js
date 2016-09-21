@@ -1,3 +1,4 @@
+// Test directories
 var dirs = {
 	react: 'react',
 	react_keys: 'react_keys',
@@ -10,6 +11,7 @@ var browserPerf = require('browser-perf');
 var spawn = require('child_process').spawn;
 var json2csv = require('json2csv');
 
+// Pure test data results
 var FILE = 'data.json';
 var fs = require('fs');
 if (!fs.existsSync(FILE)) {
@@ -42,17 +44,18 @@ function stopServer(childProcess) {
     childProcess.kill('SIGTERM');
 }
 
-function averageValues() {
+// Benchmarking results into a .csv file
+function saveAverageResultsToCsvFile() {
     var fields = ['MajorGC', 'MinorGC', 'Layout', 'Paint', 'mean_frame_time',
-        'droppedFrameCount', 'ExpensivePaints', 'ExpensiveEventHandlers',
-        'NodePerLayout_avg', 'frames_per_sec', 'percentage_smooth',
-        'domReadyTime', 'totalJSHeapSize_max', 'totalJSHeapSize_avg',
-		'usedJSHeapSize_max', 'usedJSHeapSize_avg', 'Javascript'];
+        'droppedFrameCount', 'NodePerLayout_avg', 'frames_per_sec', 'percentage_smooth',
+        'domReadyTime', 'Javascript'];
 
+	// Parse the pure result JSON for csv conversion
     var data = JSON.parse(fs.readFileSync(FILE));
 
     var result = [];
 
+	// Calculating the average value of several identical tests
     fields.forEach(function(field) {
         var row = { field: field };
         Object.keys(data).forEach(function(framework) {
@@ -70,6 +73,7 @@ function averageValues() {
 
     var columnNames = [ 'field' ].concat(Object.keys(data));
 
+	// Creating the result .csv file
     json2csv({ data: result, fields: columnNames }, function(err, csv) {
         if(err) {
             console.log(err);
@@ -87,7 +91,7 @@ var frameworks = Object.keys(dirs);
 	if (i >= frameworks.length) {
 		console.log('All tests done');
 		stopChromeDriver(chromeDriver);
-		averageValues();
+		saveAverageResultsToCsvFile();
 		return;
 	}
 
@@ -117,7 +121,7 @@ function repeatTest(framework, cb) {
 			return;
 		}
 
-		console.log('[%d|%d]', i, REPEAT);
+		console.log('[%d|%d]', i+1, REPEAT);
 		browserPerf('http://localhost:8000', function(err, result) {
 			if (err) {
 				console.error(err);

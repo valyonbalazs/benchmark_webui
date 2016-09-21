@@ -1,7 +1,8 @@
+// The root element
 var dbmonApp = angular.module('dbmonApp', ['dbmonControllers']);
-
 var dbmonControllers = angular.module('dbmonControllers', []);
 
+// GENERATING DATA -------------------------------------------------------
 var ENV = {};
 ENV.rows = 100;
 ENV.timeout = 0;
@@ -10,50 +11,47 @@ var start = Date.now();
 var loadCount = 0;
 
 function getData() {
-  // generate some dummy data
+  // Simulating Database clusters with dummy data
   data = {
     start_at: new Date().getTime() / 1000,
     databases: {}
   };
 
+  // Creating dummy master DB clusters
   for (var i = 1; i <= ENV.rows; i++) {
     data.databases["cluster" + i] = {
       queries: []
     };
-
-    data.databases["cluster" + i + "slave"] = {
-      queries: []
-    };
   }
 
+  // Iterate through all of the dummy DBs and fill with data
   Object.keys(data.databases).forEach(function(dbname) {
-    var info = data.databases[dbname];
 
-    var r = Math.floor((Math.random() * 10) + 1);
-    for (var i = 0; i < r; i++) {
-      var q = {
-        canvas_action: null,
-        canvas_context_id: null,
-        canvas_controller: null,
-        canvas_hostname: null,
-        canvas_job_tag: null,
-        canvas_pid: null,
-        elapsed: Math.random() * 15,
-        query: "SELECT blah FROM something",
-        waiting: Math.random() < 0.5
-      };
+  // Get a dummy DB value 
+  var info = data.databases[dbname];
 
-      if (Math.random() < 0.2) {
-        q.query = "<IDLE> in transaction";
+      // Generate random number property for each DB instance
+      var r = Math.floor((Math.random() * 30) + 1);
+      for (var i = 0; i < r; i++) {
+        var q = {
+          elapsed: Math.random() * 15,
+          query: "Critical load",
+          waiting: Math.random() < 0.5
+        };
+
+        if (Math.random() < 0.2) {
+          q.query = "<IDLE>";
+        }
+
+        if (Math.random() < 0.1) {
+          q.query = "Normal functioning";
+        }
+
+        // Fill the DB instance with random content
+        info.queries.push(q);
       }
 
-      if (Math.random() < 0.1) {
-        q.query = "vacuum";
-      }
-
-      info.queries.push(q);
-    }
-
+    // Sort the DB instances by elapsed time
     info.queries = info.queries.sort(function(a, b) {
       return b.elapsed - a.elapsed;
     });
@@ -62,6 +60,8 @@ function getData() {
   return data;
 }
 
+// ------------------------------------------------------------------
+// UI Rendering
 var _base;
 
 (_base = String.prototype).lpad || (_base.lpad = function(padding, toLength) {
@@ -73,37 +73,15 @@ dbmonControllers.controller('MainController', ['$scope', '$timeout',
         $scope.loadCount = 0;
         $scope.databases = {};
 
-        $scope.getClassName = function(query) {
-            var className = "elapsed short";
-            if (query.elapsed >= 10.0) {
-                className = "elapsed warn_long";
-            } else if (query.elapsed >= 1.0) {
-                className = "elapsed warn";
-            }
-            return "Query " + className;
-        };
-
-        $scope.formatElapsed = function(value) {
-          if(!value) {
-              return '';
-          }
-          str = parseFloat(value).toFixed(2);
-          if (value > 60) {
-            minutes = Math.floor(value / 60);
-            comps = (value % 60).toFixed(2).split('.');
-            seconds = comps[0].lpad('0', 2);
-            ms = comps[1];
-            str = minutes + ":" + seconds + "." + ms;
-          }
-          return str;
-        }
-
         function loadSamples() {
+
+            // Updated new data from dummy data generator
             var newData = getData();
 
             Object.keys(newData.databases).forEach(function(dbname) {
               var sampleInfo = newData.databases[dbname];
 
+              // If the dummy database instance does not exists already
               if (!$scope.databases[dbname]) {
                 $scope.databases[dbname] = {
                   name: dbname,
@@ -127,9 +105,10 @@ dbmonControllers.controller('MainController', ['$scope', '$timeout',
                   db.topFiveQueries.push({ query: "" });
               }
 
+              // Adding style class selectors to the instance number indicators
               var countClassName = "label";
               if (db.lastSample.queries.length >= 20) {
-                  countClassName += " label-important";
+                  countClassName += " label-danger";
               } else if (db.lastSample.queries.length >= 10) {
                   countClassName += " label-warning";
               } else {
@@ -142,6 +121,34 @@ dbmonControllers.controller('MainController', ['$scope', '$timeout',
             $timeout(loadSamples, ENV.timeout);
         }
 
+        // Load data after initialization
         loadSamples();
+
+        // Adding style class selectors for elapsed time values in table cells
+        $scope.getClassName = function(query) {
+            var className = "elapsed short";
+            if (query.elapsed >= 10.0) {
+                className = "elapsed warn_long";
+            } else if (query.elapsed >= 1.0) {
+                className = "elapsed warn";
+            }
+            return "Query " + className;
+        };
+
+        // Formatting displayed elapsed time as data in the table cell
+        $scope.formatElapsed = function(value) {
+          if(!value) {
+              return '';
+          }
+          str = parseFloat(value).toFixed(2);
+          if (value > 60) {
+            minutes = Math.floor(value / 60);
+            comps = (value % 60).toFixed(2).split('.');
+            seconds = comps[0].lpad('0', 2);
+            ms = comps[1];
+            str = minutes + ":" + seconds + "." + ms;
+          }
+          return str;
+        }
     }
 ]);

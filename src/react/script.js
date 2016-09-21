@@ -119,7 +119,7 @@ var sample = function (queries, time) {
   // Adding style class selectors to the instance number indicators
   var countClassName = "label";
   if (queries.length >= 20) {
-    countClassName += " label-important";
+    countClassName += " label-danger";
   }
   else if (queries.length >= 10) {
     countClassName += " label-warning";
@@ -200,8 +200,9 @@ var DBMon = React.createClass({
   render: function() {
     var databases = [];
     Object.keys(this.state.databases).forEach(function(dbname) {
-      databases.push(
-        <Database dbname={dbname}
+      databases.push(        
+        <Database 
+          dbname={dbname}
           samples={this.state.databases[dbname].samples} />
       );
     }.bind(this));
