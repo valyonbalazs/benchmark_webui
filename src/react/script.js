@@ -210,16 +210,6 @@ var DBMon = React.createClass({
     return (
       <div>
         <table className="table table-striped latest-data">
-          <thead>
-            <tr>
-              <th>DB Cluster name</th>
-              <th>Number of DB instances</th>
-              <th>Values</th>
-              <th>Values</th>
-              <th>Values</th>
-              <th>Values</th>
-            </tr>
-          </thead>
           <tbody>
             {databases}
           </tbody>

@@ -4,7 +4,7 @@ var dbmonControllers = angular.module('dbmonControllers', []);
 
 // GENERATING DATA -------------------------------------------------------
 var ENV = {};
-ENV.rows = 100;
+ENV.rows = 200;
 ENV.timeout = 0;
 
 var start = Date.now();

@@ -227,44 +227,6 @@ var DBMon = React.createClass({
         "table",
         { className: "table table-striped latest-data" },
         React.createElement(
-          "thead",
-          null,
-          React.createElement(
-            "tr",
-            null,
-            React.createElement(
-              "th",
-              null,
-              "DB Cluster name"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Number of DB instances"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            )
-          )
-        ),
-        React.createElement(
           "tbody",
           null,
           databases

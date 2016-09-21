@@ -128,7 +128,7 @@ var sample = function sample(queries, time) {
   // Adding style class selectors to the instance number indicators
   var countClassName = "label";
   if (queries.length >= 20) {
-    countClassName += " label-important";
+    countClassName += " label-danger";
   } else if (queries.length >= 10) {
     countClassName += " label-warning";
   } else {
@@ -214,7 +214,8 @@ var DBMon = React.createClass({
   render: function render() {
     var databases = [];
     Object.keys(this.state.databases).forEach(function (dbname) {
-      databases.push(React.createElement(Database, { dbname: dbname,
+      databases.push(React.createElement(Database, {
+        dbname: dbname,
         samples: this.state.databases[dbname].samples }));
     }.bind(this));
 
@@ -224,44 +225,6 @@ var DBMon = React.createClass({
       React.createElement(
         "table",
         { className: "table table-striped latest-data" },
-        React.createElement(
-          "thead",
-          null,
-          React.createElement(
-            "tr",
-            null,
-            React.createElement(
-              "th",
-              null,
-              "DB Cluster name"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Number of DB instances"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            ),
-            React.createElement(
-              "th",
-              null,
-              "Values"
-            )
-          )
-        ),
         React.createElement(
           "tbody",
           null,
