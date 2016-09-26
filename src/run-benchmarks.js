@@ -20,7 +20,7 @@ if (!fs.existsSync(FILE)) {
 
 function startChromeDriver() {
     console.log('Starting ChromeDriver...');
-    return spawn('chromedriver');
+    return spawn('chromedriver_v2.24');
 }
 
 function stopChromeDriver(childProcess) {
@@ -46,8 +46,8 @@ function stopServer(childProcess) {
 
 // Benchmarking results into a .csv file
 function saveAverageResultsToCsvFile() {
-    var fields = ['MajorGC', 'MinorGC', 'Layout', 'Paint', 'mean_frame_time',
-        'droppedFrameCount', 'NodePerLayout_avg', 'frames_per_sec', 'percentage_smooth',
+    var fields = ['MajorGC', 'MinorGC', 'Layout', 'Paint',
+        'droppedFrameCount', 'frames_per_sec', 
         'domReadyTime', 'Javascript'];
 
 	// Parse the pure result JSON for csv conversion
